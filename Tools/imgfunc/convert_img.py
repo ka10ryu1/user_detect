@@ -222,7 +222,11 @@ def vhstack(imgs, vh_size=None, img_size=None):
 
     # imgsの中で最小のw,h,chの組み合わせを取得し、すべての画像をそのサイズに切り抜く
     ms = np.min([i.shape for i in imgs], axis=0)
-    imgs = [i[:ms[0], :ms[1], :ms[2]] for i in imgs]
+    if len(ms) > 2:
+        imgs = [i[:ms[0], :ms[1], :ms[2]] for i in imgs]
+    else:
+        imgs = [i[:ms[0], :ms[1]] for i in imgs]
+
     # imgsを縦方向に連結する
     buf = [np.vstack(imgs[i * vh_size[0]: (i + 1) * vh_size[0]])
            for i in range(vh_size[1])]
