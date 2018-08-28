@@ -167,6 +167,11 @@ class TestImgFunc(unittest.TestCase):
             I.cnv.vhstack([l, m, l, m], (1, 1)).shape,
             (256, 1024, 3)
         )
+        m = cv2.imread(mandrill_path, cv2.IMREAD_GRAYSCALE)
+        self.assertEqual(
+            I.cnv.vhstack([m, m, m, m], (2, 2)).shape,
+            (512, 512)
+        )
 
     def test_rotate(self):
         l = cv2.imread(lenna_path)
