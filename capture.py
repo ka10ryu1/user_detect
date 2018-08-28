@@ -17,7 +17,7 @@ import numpy as np
 
 import Tools.func as F
 from Lib.video import videoCap
-from Lib.hc_sr04 import objectDetect
+#from Lib.hc_sr04 import objectDetect
 
 
 def command():
@@ -30,8 +30,8 @@ def command():
                         help='インターバル撮影の間隔 [default: 0.25]')
     parser.add_argument('-s', '--stock_num', type=int, default=10,
                         help='インターバル撮影の画像保持数 [default: 10]')
-    parser.add_argument('-p', '--serial_port',  default='/dev/ttyACM0',
-                        help='使用するシリアルポート（$ dmesg | grep ttyACM0）')
+    # parser.add_argument('-p', '--serial_port',  default='/dev/ttyACM0',
+    #                    help='使用するシリアルポート（$ dmesg | grep ttyACM0）')
     parser.add_argument('--lower', action='store_true',
                         help='select timeoutが発生する場合に画質を落とす')
     parser.add_argument('--debug', action='store_true',
@@ -45,7 +45,7 @@ def main(args):
     # カメラの初期化
     cap = videoCap(args.channel, 1, args.lower,
                    args.stock_num, args.interval_time)
-    dist = objectDetect(args.serial_port)
+    #dist = objectDetect(args.serial_port)
 
     while(True):
         # カメラ画像の取得
@@ -54,8 +54,8 @@ def main(args):
             time.sleep(2)
             continue
 
-        dist.read()
-        dist.view()
+        # dist.read()
+        # dist.view()
 
         # 画面の表示とキー入力の取得
         cv2.imshow('all', cap.viewAll())
@@ -77,7 +77,7 @@ def main(args):
 
     # 終了処理
     cap.release()
-    dist.release()
+    # dist.release()
     cv2.destroyAllWindows()
 
 
