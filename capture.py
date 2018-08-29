@@ -50,8 +50,8 @@ def main(args):
     cap = videoCap(args.channel, 1, args.lower,
                    args.stock_num, args.interval_time)
 
-    val = 0
-    oldval = 0
+    val = args.diff_val
+    oldval = args.diff_val
     diff = 0
     while(True):
         # カメラ画像の取得
@@ -64,9 +64,9 @@ def main(args):
         diff = oldval - val
 
         # 画面の表示とキー入力の取得
-        cv2.imshow('all', cap.viewAll())
         key = cv2.waitKey(20) & 0xff
         if args.debug:
+            cv2.imshow('all', cap.viewAll())
             print('key: {}, frame: {}'.format(key, cap.frame_shape))
             dist.view()
 
@@ -74,7 +74,7 @@ def main(args):
         if key == 27:  # Esc Key
             print('exit!')
             break
-        elif key == 13 or key == 10 or diff < args.diff_val:  # Enter Key or Sensor detect
+        elif key == 13 or key == 10 or diff > args.diff_val:  # Enter Key or Sensor detect
             bk = cap.writeBk4(args.out_path)
             fr = cap.writeFr4(args.out_path)
             print('capture:', bk)
