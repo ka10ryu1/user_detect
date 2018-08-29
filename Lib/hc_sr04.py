@@ -29,6 +29,16 @@ class objectDetect(object):
         # タイマーインターバル設定 [s]
         self._interval = interval
 
+    def _str2float(self, line):
+        line = line.decode()  # byte -> string
+        di = line.rstrip()  # 行終端コード削除
+        try:
+            fdi = float(di)
+        except:
+            fdi = 0
+
+        return fdi
+
     def _queue(self, a):
         dst = np.roll(self._data, -1)
         dst[-1] = a
@@ -42,10 +52,8 @@ class objectDetect(object):
     def read(self):
         tm = time.time() - self._start
         if tm > self._interval:
-            line = self._serial.readline()  # シリアルデータの取得
-            line = line.decode()  # byte -> string
-            di = line.rstrip()  # 行終端コード削除
-            self._queue(float(di))
+            line = self._str2float(self._serial.readline())
+            self._data = self._queue(line)
             self._start = time.time()
 
         return self._data[-1]
