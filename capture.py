@@ -30,6 +30,8 @@ def command():
                         help='インターバル撮影の間隔 [default: 0.25]')
     parser.add_argument('-s', '--stock_num', type=int, default=10,
                         help='インターバル撮影の画像保持数 [default: 10]')
+    parser.add_argument('-d', '--diff_val', type=int, default=80,
+                        help='超音波センサの判定差分値 [default: 80]')
     parser.add_argument('-p', '--serial_port',  default='/dev/ttyACM0',
                         help='使用するシリアルポート（$ dmesg | grep ttyACM0）')
     parser.add_argument('--lower', action='store_true',
@@ -49,6 +51,8 @@ def main(args):
                    args.stock_num, args.interval_time)
 
     val = 0
+    oldval = 0
+    diff = 0
     while(True):
         # カメラ画像の取得
         if cap.read() is False:
@@ -57,6 +61,7 @@ def main(args):
             continue
 
         val = dist.read()
+        diff = oldval - val
 
         # 画面の表示とキー入力の取得
         cv2.imshow('all', cap.viewAll())
@@ -69,13 +74,15 @@ def main(args):
         if key == 27:  # Esc Key
             print('exit!')
             break
-        elif key == 13 or key == 10 or val < 20:  # Enter Key or Sensor detect
+        elif key == 13 or key == 10 or diff < args.diff_val:  # Enter Key or Sensor detect
             bk = cap.writeBk4(args.out_path)
             fr = cap.writeFr4(args.out_path)
             print('capture:', bk)
             print('capture:', fr)
             if args.debug:
                 cv2.imshow('cap', np.vstack([bk, fr]))
+
+        oldval = val
 
     # 終了処理
     cap.release()
