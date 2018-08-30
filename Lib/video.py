@@ -18,15 +18,22 @@ class videoCap(object):
 
     def __init__(self, usb_ch, img_ch=3, lower=False, cap_num=6, interval=0.5):
         self._cap = cv2.VideoCapture(usb_ch)
+
+        if self._cap.isOpened is False:
+            print('USB Camera not found!')
+            exit()
+
         # lowerがセットされた場合に、画像サイズとFPSを固定する
         if lower:
-            self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, 200)
-            self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 200)
-            self._cap.set(cv2.CAP_PROP_FPS, 5)
-            self.size = (144, 176, img_ch)
+            width, heigt, fps = 176, 144, 5
         else:
-            self.size = (480, 640, img_ch)
+            width, heigt, fps = 640, 480, 30
 
+        self.size = (heigt, width, img_ch)
+        # USBカメラのパラメータを設定する
+        self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, heigt)
+        self._cap.set(cv2.CAP_PROP_FPS, fps)
         # 表示・保存用画像の格納先を確保
         self._frame = I.blank.black(self.size)
         self._data = [I.blank.black(self.size) for i in range(cap_num)]
