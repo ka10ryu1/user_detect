@@ -44,10 +44,13 @@ def command():
 
 
 def main(args):
+    if args.lower:
+        w, h, fps = 176, 144, 30
+
     # 超音波センサの初期化
     dist = objectDetect(args.serial_port)
     # カメラの初期化
-    cap = videoCap(args.channel, 1, args.lower,
+    cap = videoCap(args.channel, 1, w, h, fps,
                    args.stock_num, args.interval_time)
 
     val = args.diff_val

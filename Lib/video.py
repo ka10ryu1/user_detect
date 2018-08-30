@@ -16,29 +16,23 @@ class videoCap(object):
     USBカメラの処理をクラス化したもの
     """
 
-    def __init__(self, usb_ch, img_ch=3, lower=False, cap_num=6, interval=0.5):
+    def __init__(self, usb_ch, img_ch=3, w=640, h=480, fps=30, cap_num=6, interval=0.5):
         self._cap = cv2.VideoCapture(usb_ch)
 
         if self._cap.isOpened is False:
             print('USB Camera not found!')
             exit()
 
-        # lowerがセットされた場合に、画像サイズとFPSを固定する
-        if lower:
-            width, heigt, fps = 176, 144, 5
-        else:
-            width, heigt, fps = 640, 480, 30
-
-        self.size = (heigt, width, img_ch)
         # USBカメラのパラメータを設定する
-        self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, heigt)
-        self._cap.set(cv2.CAP_PROP_FPS, fps)
+        self.setWidth(w)
+        self.setHeight(h)
+        self.setFPS(fps)
         # 表示・保存用画像の格納先を確保
+        self.size = (h, w, img_ch)
         self._frame = I.blank.black(self.size)
         self._data = [I.blank.black(self.size) for i in range(cap_num)]
         # 保存する画像のチャンネル数
-        self.ch = self.size[2]
+        self.ch = img_ch
         # キャプチャ画像のサイズ情報
         self.frame_shape = self._frame.shape
         # インターバル撮影する間隔 [s]
@@ -49,6 +43,15 @@ class videoCap(object):
         self._write_time = 0
         # タイマー起動
         self._start = time.time()
+
+    def setWidth(self, width):
+        self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+
+    def setHeight(self, heigt):
+        self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, heigt)
+
+    def setFPS(self, fps):
+        self._cap.set(cv2.CAP_PROP_FPS, fps)
 
     def read(self):
         """
