@@ -36,6 +36,8 @@ def command():
                         help='使用するシリアルポート（$ dmesg | grep ttyACM0）')
     parser.add_argument('--lower', action='store_true',
                         help='select timeoutが発生する場合に画質を落とす')
+    parser.add_argument('--demo', action='store_true',
+                        help='DEMO用に見栄えを重視する')
     parser.add_argument('--debug', action='store_true',
                         help='debugモード')
     args = parser.parse_args()
@@ -46,6 +48,8 @@ def command():
 def main(args):
     if args.lower:
         w, h, fps = 176, 144, 30
+    else:
+        w, h, fps = 640, 480, 30
 
     # 超音波センサの初期化
     dist = objectDetect(args.serial_port)
@@ -68,10 +72,6 @@ def main(args):
 
         # 画面の表示とキー入力の取得
         key = cv2.waitKey(20) & 0xff
-        if args.debug:
-            cv2.imshow('all', cap.viewAll())
-            print('key: {}, frame: {}'.format(key, cap.frame_shape))
-            dist.view()
 
         # キーに応じて制御
         if key == 27:  # Esc Key
@@ -86,6 +86,13 @@ def main(args):
                 cv2.imshow('cap', np.vstack([bk, fr]))
 
         oldval = val
+        if args.debug:
+            cv2.imshow('all', cap.viewAll())
+            print('key: {}, frame: {}'.format(key, cap.frame_shape))
+            dist.view()
+        elif args.demo:
+            cv2.imshow('all', cap.viewAll(2))
+            cv2.imshow('data', fr)
 
     # 終了処理
     cap.release()
