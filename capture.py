@@ -82,7 +82,7 @@ def main(args):
             fr = cap.writeFr4(args.out_path)
             print('capture:', bk)
             print('capture:', fr)
-            if args.debug:
+            if args.debug or args.debug:
                 cv2.imshow('cap', np.vstack([bk, fr]))
 
         oldval = val
@@ -92,7 +92,6 @@ def main(args):
             dist.view()
         elif args.demo:
             cv2.imshow('all', cap.viewAll(2))
-            cv2.imshow('data', fr)
 
     # 終了処理
     cap.release()
