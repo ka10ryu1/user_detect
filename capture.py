@@ -26,8 +26,8 @@ def command():
                         help='使用するWebカメラのチャンネル [default: 0]')
     parser.add_argument('-o', '--out_path', default='./data/',
                         help='画像の保存先 (default: ./data/)')
-    parser.add_argument('-i', '--interval_time', type=float, default=0.25,
-                        help='インターバル撮影の間隔 [default: 0.25]')
+    parser.add_argument('-i', '--interval_time', type=float, default=0.2,
+                        help='インターバル撮影の間隔 [default: 0.2]')
     parser.add_argument('-s', '--stock_num', type=int, default=10,
                         help='インターバル撮影の画像保持数 [default: 10]')
     parser.add_argument('-d', '--diff_val', type=int, default=80,
@@ -46,8 +46,8 @@ def command():
 
 
 def main(args):
-    if args.lower:
-        w, h, fps = 176, 144, 30
+    if args.lower or args.demo:
+        w, h, fps = 160, 120, 15
     else:
         w, h, fps = 640, 480, 30
 
@@ -82,8 +82,8 @@ def main(args):
             fr = cap.writeFr4(args.out_path)
             print('capture:', bk)
             print('capture:', fr)
-            if args.debug or args.debug:
-                cv2.imshow('cap', np.vstack([bk, fr]))
+            if args.debug or args.demo:
+                cv2.imshow('cap', cap.viewFr4(2))
 
         oldval = val
         if args.debug:
